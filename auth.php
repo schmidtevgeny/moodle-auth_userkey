@@ -400,12 +400,25 @@ class auth_plugin_userkey extends auth_plugin_base {
         global $DB, $CFG;
 
         $mappingfield = $this->get_mapping_field();
-
+        if ($mappingfield == 'parusuuid') {
+            $sql = "SELECT u.*
+                      FROM mdl_user u
+                      JOIN mdl_user_info_data muid
+                        ON muid.userid = u.id AND muid.data = :uuid
+                      JOIN mdl_user_info_field muif
+                        ON muid.fieldid = muif.id AND muif.shortname = 'parusuuid'";
+            $user = $DB->get_records_sql($sql, ['uuid'=>$data['username']]);
+            if (empty($user)) {
+                throw new invalid_parameter_exception('User is not exist');
+            }else{
+                return $user;
+            }
+        }
         $params = [
             $mappingfield => $data[$mappingfield],
             'mnethostid' => $CFG->mnet_localhost_id,
         ];
-
+        // get or create on default mappingfield
         $user = $DB->get_record('user', $params);
 
         if (empty($user)) {
@@ -417,7 +430,7 @@ class auth_plugin_userkey extends auth_plugin_base {
         } else if ($this->should_update_user()) {
             $user = $this->update_user($user, $data);
         }
-
+        // enroll
         if (isset($data['assign'])) {
             foreach ($data['assign'] as $courseid) {
                 $coursecontext = context_course::instance($courseid);
@@ -495,6 +508,7 @@ class auth_plugin_userkey extends auth_plugin_base {
             'username' => get_string('username'),
             'email' => get_string('email'),
             'idnumber' => get_string('idnumber'),
+            'parusuuid' => get_string('parusuuid'),
         ];
     }
 
