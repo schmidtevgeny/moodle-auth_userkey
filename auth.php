@@ -407,10 +407,12 @@ class auth_plugin_userkey extends auth_plugin_base {
                         ON muid.userid = u.id AND muid.data = :uuid
                       JOIN mdl_user_info_field muif
                         ON muid.fieldid = muif.id AND muif.shortname = 'parusuuid'";
-            $user = $DB->get_records_sql($sql, ['uuid'=>$data['username']]);
+
+            $user = $DB->get_record_sql($sql, ['uuid' => $data['parusuuid']]);
+
             if (empty($user)) {
                 throw new invalid_parameter_exception('User is not exist');
-            }else{
+            } else {
                 return $user;
             }
         }
@@ -548,6 +550,15 @@ class auth_plugin_userkey extends auth_plugin_base {
                 ];
                 break;
 
+            case 'parusuuid':
+                $parameter = [
+                    'parusuuid' => new external_value(
+                        PARAM_RAW,
+                        'studenam'
+                    ),
+                ];
+                break;
+
             default:
                 $parameter = [];
                 break;
@@ -584,7 +595,7 @@ class auth_plugin_userkey extends auth_plugin_base {
             }
         }
 
-        $parameters['assign'] = new external_multiple_structure(new external_value(PARAM_INT, 'COURSEID'), 'Assign to courses');
+        $parameters['assign'] = new external_multiple_structure(new external_value(PARAM_INT, 'COURSEID'), 'Assign to courses', VALUE_OPTIONAL);
 
         return $parameters;
     }
