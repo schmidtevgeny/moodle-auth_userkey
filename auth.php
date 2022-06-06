@@ -558,6 +558,7 @@ class auth_plugin_userkey extends auth_plugin_base {
         }
 
         $mappingfield = $this->get_mapping_field();
+
         if ($this->should_create_user() || $this->should_update_user()) {
             $parameters['firstname'] = new external_value(PARAM_NOTAGS, 'The first name(s) of the user', VALUE_OPTIONAL);
             $parameters['lastname'] = new external_value(PARAM_NOTAGS, 'The family name of the user', VALUE_OPTIONAL);
@@ -570,7 +571,7 @@ class auth_plugin_userkey extends auth_plugin_base {
             }
         }
 
-        $parameters['assign'] = new external_multiple_structure(new external_value(PARAM_INT, 'COURSEID'), 'Assign to courses');
+        $parameters['assign'] = new external_multiple_structure(new external_value(PARAM_INT, 'COURSEID'), 'Assign to courses', false, []);
 
         return $parameters;
     }
