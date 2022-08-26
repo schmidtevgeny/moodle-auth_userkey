@@ -562,7 +562,7 @@ class auth_plugin_userkey extends auth_plugin_base {
         if ($this->should_create_user() || $this->should_update_user()) {
             $parameters['firstname'] = new external_value(PARAM_NOTAGS, 'The first name(s) of the user', VALUE_OPTIONAL);
             $parameters['lastname'] = new external_value(PARAM_NOTAGS, 'The family name of the user', VALUE_OPTIONAL);
-            $parameters['middlename'] = new external_value(PARAM_NOTAGS, 'The surname or middlename of the user', VALUE_DEFAULT, '');
+            $parameters['middlename'] = new external_value(PARAM_NOTAGS, 'The surname or middlename of the user', VALUE_OPTIONAL);
 
             if ($mappingfield != 'email') {
                 $parameters['email'] = new external_value(PARAM_RAW_TRIMMED, 'A valid and unique email address', VALUE_OPTIONAL);
