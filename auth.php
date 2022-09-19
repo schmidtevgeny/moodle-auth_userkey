@@ -288,7 +288,7 @@ class auth_plugin_userkey extends auth_plugin_base {
         $user['confirmed'] = 1;
         $user['mnethostid'] = $CFG->mnet_localhost_id;
 
-        $requiredfieds = ['username', 'email', 'firstname', 'lastname', 'middlename'];
+        $requiredfieds = ['username', 'email', 'firstname', 'lastname'];
         $missingfields = [];
         foreach ($requiredfieds as $requiredfied) {
             if (empty($user[$requiredfied])) {
