@@ -160,10 +160,10 @@ class auth_plugin_userkey extends auth_plugin_base {
             print_error($exception->errorcode);
         }
 
-        if (isloggedin()) {
+       if (isloggedin()) {
             if ($USER->id != $key->userid) {
                 // Logout the current user if it's different to one that associated to the valid key.
-                require_logout();
+                //require_logout();
             } else {
                 // Don't process further if the user is already logged in.
                 $this->userkeymanager->delete_keys($key->userid);
