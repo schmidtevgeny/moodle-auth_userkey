@@ -404,9 +404,19 @@ class auth_plugin_userkey extends auth_plugin_base {
         $params = [
             $mappingfield => $data[$mappingfield],
             'mnethostid' => $CFG->mnet_localhost_id,
+            'auth' => 'userkey',
         ];
 
         $user = $DB->get_record('user', $params);
+
+        if (empty($user)) {
+            $params = [
+                $mappingfield => $data[$mappingfield],
+                'mnethostid' => $CFG->mnet_localhost_id,
+                'auth' => 'manual',
+            ];
+            $user = $DB->get_record('user', $params);
+        }
 
         if (empty($user)) {
             if ($this->should_create_user()) {
