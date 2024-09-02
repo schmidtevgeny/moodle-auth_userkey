@@ -330,6 +330,7 @@ class auth_plugin_userkey extends auth_plugin_base {
 
         $changed = false;
         foreach ($userdata as $key => $value) {
+            if($key=='email') continue;
             if ($user->$key != $value) {
                 $changed = true;
                 break;
@@ -346,7 +347,8 @@ class auth_plugin_userkey extends auth_plugin_base {
         ) {
             throw new invalid_parameter_exception('Username already exists: ' . $userdata['username']);
         }
-        if (!validate_email($userdata['email'])) {
+        // Надеюсь это разрешит авторизацию без почты
+        /*if (!validate_email($userdata['email'])) {
             throw new invalid_parameter_exception('Email address is invalid: ' . $userdata['email']);
         } else if (
             empty($CFG->allowaccountssameemail)
@@ -354,10 +356,12 @@ class auth_plugin_userkey extends auth_plugin_base {
             && $DB->record_exists('user', ['email' => $userdata['email'], 'mnethostid' => $CFG->mnet_localhost_id])
         ) {
             throw new invalid_parameter_exception('Email address already exists: ' . $userdata['email']);
-        }
+        }*/
         $userdata['id'] = $user->id;
+        unset($userdata['email']);
 
         $userdata = (object)$userdata;
+        // TODO: запретить изменение почты
         user_update_user($userdata, false);
         return $DB->get_record('user', ['id' => $user->id]);
     }
@@ -575,7 +579,7 @@ class auth_plugin_userkey extends auth_plugin_base {
             $parameters['middlename'] = new external_value(PARAM_NOTAGS, 'The surname or middlename of the user', VALUE_OPTIONAL);
 
             if ($mappingfield != 'email') {
-                $parameters['email'] = new external_value(PARAM_RAW_TRIMMED, 'A valid and unique email address', VALUE_OPTIONAL);
+                $parameters['email'] = new external_value(PARAM_RAW, 'A valid and unique email address', VALUE_OPTIONAL);
             }
             if ($mappingfield != 'username') {
                 $parameters['username'] = new external_value(PARAM_USERNAME, 'A valid and unique username', VALUE_OPTIONAL);
