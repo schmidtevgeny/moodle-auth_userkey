@@ -34,7 +34,8 @@ require_once($CFG->dirroot . '/user/lib.php');
 /**
  * User key authentication plugin.
  */
-class auth_plugin_userkey extends auth_plugin_base {
+class auth_plugin_userkey extends auth_plugin_base
+{
 
     /**
      * Default mapping field.
@@ -67,7 +68,8 @@ class auth_plugin_userkey extends auth_plugin_base {
     /**
      * Constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->authtype = 'userkey';
         $this->config = get_config('auth_userkey');
         $this->userkeymanager = new core_userkey_manager($this->config);
@@ -78,7 +80,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * It redirects a user if required or return true.
      */
-    public function pre_loginpage_hook() {
+    public function pre_loginpage_hook()
+    {
         global $SESSION;
 
         // If we previously tried to skip SSO on, but then navigated
@@ -96,7 +99,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * It redirects a user if required or return true.
      */
-    public function loginpage_hook() {
+    public function loginpage_hook()
+    {
         if ($this->should_login_redirect()) {
             $this->redirect($this->config->ssourl);
         }
@@ -111,7 +115,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @throws \moodle_exception If gets running via CLI or AJAX call.
      */
-    protected function redirect($url) {
+    protected function redirect($url)
+    {
         if (CLI_SCRIPT or AJAX_SCRIPT) {
             throw new moodle_exception('redirecterrordetected', 'auth_userkey', '', $url);
         }
@@ -127,7 +132,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool Authentication success or failure.
      */
-    public function user_login($username, $password) {
+    public function user_login($username, $password)
+    {
         return false;
     }
 
@@ -138,7 +144,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @throws \moodle_exception If something went wrong.
      */
-    public function user_login_userkey() {
+    public function user_login_userkey()
+    {
         global $SESSION, $CFG, $USER;
 
         $keyvalue = required_param('key', PARAM_ALPHANUM);
@@ -187,7 +194,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool True.
      */
-    public function prevent_local_passwords() {
+    public function prevent_local_passwords()
+    {
         return true;
     }
 
@@ -196,7 +204,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool False.
      */
-    public function is_internal() {
+    public function is_internal()
+    {
         return false;
     }
 
@@ -205,7 +214,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool False.
      */
-    public function can_change_password() {
+    public function can_change_password()
+    {
         return false;
     }
 
@@ -216,7 +226,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @param \auth_userkey\userkey_manager_interface $keymanager
      */
-    public function set_userkey_manager(userkey_manager_interface $keymanager) {
+    public function set_userkey_manager(userkey_manager_interface $keymanager)
+    {
         $this->userkeymanager = $keymanager;
     }
 
@@ -225,7 +236,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return string
      */
-    public function get_mapping_field() {
+    public function get_mapping_field()
+    {
         if (isset($this->config->mappingfield) && !empty($this->config->mappingfield)) {
             return $this->config->mappingfield;
         }
@@ -238,7 +250,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool
      */
-    protected function should_create_user() {
+    protected function should_create_user()
+    {
         if (isset($this->config->createuser) && $this->config->createuser == true) {
             return true;
         }
@@ -251,7 +264,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool
      */
-    protected function should_update_user() {
+    protected function should_update_user()
+    {
         if (isset($this->config->updateuser) && $this->config->updateuser == true) {
             return true;
         }
@@ -264,7 +278,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool
      */
-    protected function is_ip_restriction_enabled() {
+    protected function is_ip_restriction_enabled()
+    {
         if (isset($this->config->iprestriction) && $this->config->iprestriction == true) {
             return true;
         }
@@ -279,7 +294,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return object User object.
      */
-    protected function create_user(array $data) {
+    protected function create_user(array $data)
+    {
         global $DB, $CFG;
 
         $user = $data;
@@ -321,7 +337,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return object User object.
      */
-    protected function update_user(\stdClass $user, array $data) {
+    protected function update_user(\stdClass $user, array $data)
+    {
         global $DB, $CFG;
 
         $userdata = $data;
@@ -330,7 +347,7 @@ class auth_plugin_userkey extends auth_plugin_base {
 
         $changed = false;
         foreach ($userdata as $key => $value) {
-            if($key=='email') continue;
+            if ($key == 'email') continue;
             if ($user->$key != $value) {
                 $changed = true;
                 break;
@@ -375,7 +392,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @throws \invalid_parameter_exception If provided data is invalid.
      */
-    protected function validate_user_data($data) {
+    protected function validate_user_data($data)
+    {
         $data = (array)$data;
 
         $mappingfield = $this->get_mapping_field();
@@ -400,7 +418,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @throws \invalid_parameter_exception If user is not exist and we don't need to create a new.
      */
-    protected function get_user(array $data) {
+    protected function get_user(array $data)
+    {
         global $DB, $CFG;
 
         $mappingfield = $this->get_mapping_field();
@@ -423,7 +442,48 @@ class auth_plugin_userkey extends auth_plugin_base {
         }
 
         if (empty($user)) {
-            if ($this->should_create_user()) {
+            /*if (startsWith($user['idnumber'], 'studen')) {
+                require_once($CFG->dirroot . '/local/tsu/locallib.php');
+                require_once($CFG->dirroot . '/user/profile/lib.php');
+
+                $parus = \local_tsu_parus();
+                $rec = $parus->get_record_sql("SELECT *
+FROM
+    parus.udo_max_v_analyze_student
+WHERE
+    STUDENT_UUID=:idnumber", $data);
+                if (!empty($rec) && startsWith($rec->nazvanie_gruppa,'И')) {
+                    $user = new stdClass();
+                    $user = $data;
+                    $user['auth'] = 'userkey';
+                    $user['confirmed'] = 1;
+                    $user['mnethostid'] = $CFG->mnet_localhost_id;
+                    $user['username'] = $user['idnumber'];
+                    $user['email'] = $user['idnumber'] . "@none.ru";
+                    $userid = user_create_user($user);
+                    $user = $DB->get_record('user', ['id' => $userid]);
+                    \profile_load_data($user);
+                    $user->profile_field_znumber = $rec->personalaffair;
+                    $user->profile_field_group = $rec->nazvanie_gruppa;
+                    $user->profile_field_parusuuid = $user->idnumber;
+                    if ($rec->qualification_ == "Магистр") {
+                        $user->profile_field_stage = 'магистратура';
+                    } else if ($rec->qualification_ == "Бакалавр") {
+                        $user->profile_field_stage = 'бакалавриат';
+                    } else {
+                        $user->profile_field_stage = 'специалитет';
+                    }
+
+                    $user->profile_field_direction = trim($rec->speciality_);
+                    $user->profile_field_profile = trim($rec->specialisation_);
+                    \profile_save_data($user);
+                    $DB->insert_record_raw('tsu_process_users',
+                        [ "userid"=>$user->id, "action"=>'force_update']
+                    );
+                } else {
+                    throw new invalid_parameter_exception('User is not exist');
+                }
+            } else */if ($this->should_create_user()) {
                 $user = $this->create_user($data);
             } else {
                 throw new invalid_parameter_exception('User is not exist');
@@ -458,7 +518,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return null|string Allowed IPs or null.
      */
-    protected function get_allowed_ips(array $data) {
+    protected function get_allowed_ips(array $data)
+    {
         if (isset($data['ip']) && !empty($data['ip'])) {
             return $data['ip'];
         }
@@ -474,7 +535,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      * @return string
      * @throws \invalid_parameter_exception
      */
-    protected function generate_user_key(array $data) {
+    protected function generate_user_key(array $data)
+    {
         $user = $this->get_user($data);
         $ips = $this->get_allowed_ips($data);
 
@@ -490,7 +552,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @throws \invalid_parameter_exception
      */
-    public function get_login_url($data) {
+    public function get_login_url($data)
+    {
         global $CFG;
 
         $userdata = $this->validate_user_data($data);
@@ -504,7 +567,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return array
      */
-    public function get_allowed_mapping_fields() {
+    public function get_allowed_mapping_fields()
+    {
         return [
             'username' => get_string('username'),
             'email' => get_string('email'),
@@ -517,7 +581,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return array
      */
-    protected function get_mapping_parameter() {
+    protected function get_mapping_parameter()
+    {
         $mappingfield = $this->get_mapping_field();
 
         switch ($mappingfield) {
@@ -561,7 +626,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return array
      */
-    protected function get_user_fields_parameters() {
+    protected function get_user_fields_parameters()
+    {
         $parameters = [];
 
         if ($this->is_ip_restriction_enabled()) {
@@ -596,7 +662,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return array
      */
-    public function get_request_login_url_user_parameters() {
+    public function get_request_login_url_user_parameters()
+    {
         $parameters = array_merge($this->get_mapping_parameter(), $this->get_user_fields_parameters());
 
         return $parameters;
@@ -607,7 +674,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool
      */
-    protected function should_login_redirect() {
+    protected function should_login_redirect()
+    {
         global $SESSION;
 
         $skipsso = optional_param('enrolkey_skipsso', 0, PARAM_BOOL);
@@ -635,7 +703,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @return bool
      */
-    protected function should_logout_redirect() {
+    protected function should_logout_redirect()
+    {
         global $SESSION;
 
         if (!isset($SESSION->userkey)) {
@@ -661,7 +730,8 @@ class auth_plugin_userkey extends auth_plugin_base {
      *
      * @see auth_plugin_base::logoutpage_hook()
      */
-    public function logoutpage_hook() {
+    public function logoutpage_hook()
+    {
         global $redirect;
 
         if ($this->should_logout_redirect()) {
@@ -672,7 +742,8 @@ class auth_plugin_userkey extends auth_plugin_base {
     /**
      * Log out user and redirect.
      */
-    public function user_logout_userkey() {
+    public function user_logout_userkey()
+    {
         global $CFG, $USER;
 
         $redirect = required_param('return', PARAM_URL);
