@@ -432,7 +432,7 @@ class auth_plugin_userkey extends auth_plugin_base
 
         $user = $DB->get_record('user', $params);
 
-        if (empty($user)) {
+        if (!$user) {
             $params = [
                 $mappingfield => $data[$mappingfield],
                 'mnethostid' => $CFG->mnet_localhost_id,
@@ -441,7 +441,7 @@ class auth_plugin_userkey extends auth_plugin_base
             $user = $DB->get_record('user', $params);
         }
 
-        if (empty($user)) {
+        if (!$user) {
             /*if (startsWith($user['idnumber'], 'studen')) {
                 require_once($CFG->dirroot . '/local/tsu/locallib.php');
                 require_once($CFG->dirroot . '/user/profile/lib.php');
